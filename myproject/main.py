@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from db import init_db
 from app.api import testapi
+from app.api import parameter
 
 config = dotenv_values(".env")
 log = logging.getLogger('uvicorn')
@@ -12,6 +13,7 @@ log = logging.getLogger('uvicorn')
 def create_application() -> FastAPI:
     _app = FastAPI(title="Test Fast API", version="1.0.0", description="GGWP")
     _app.include_router(testapi.router)
+    _app.include_router(parameter.router)
 
     return _app
 
