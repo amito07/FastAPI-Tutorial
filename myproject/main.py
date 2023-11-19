@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from db import init_db
 from app.api import testapi
 from app.api import parameter
+from app.api import tortoise_learn
 
 config = dotenv_values(".env")
 log = logging.getLogger('uvicorn')
@@ -14,6 +15,7 @@ def create_application() -> FastAPI:
     _app = FastAPI(title="Test Fast API", version="1.0.0", description="GGWP")
     _app.include_router(testapi.router)
     _app.include_router(parameter.router)
+    _app.include_router(tortoise_learn.router)
 
     return _app
 
