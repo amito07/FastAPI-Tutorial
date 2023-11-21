@@ -6,12 +6,14 @@ from tortoise.contrib.fastapi import register_tortoise
 
 config = dotenv_values(".env")
 
+print(config)
+
 log = logging.getLogger("uvicorn")
 
 TORTOISE_MODELS = ["aerich.models","app.models.table1"]
 
 TORTOISE_ORM = {
-    "connection":{"default": "postgres://postgres:123@127.0.0.1/nest?schema=fastapi"},
+    "connection":{"default": "postgres://citizix_user:S3cret@127.0.0.1/citizix_db?schema=fastapi"},
     "apps":{
         "models":{
             "models": TORTOISE_MODELS,
@@ -23,7 +25,7 @@ TORTOISE_ORM = {
 def init_db(app: FastAPI) -> None:
     register_tortoise(
         app,
-        db_url="postgres://postgres:123@127.0.0.1/nest?schema=fastapi",
+        db_url="postgres://citizix_user:S3cret@127.0.0.1/citizix_db?schema=fastapi",
         modules={"models": TORTOISE_MODELS},
         generate_schemas=False,
         add_exception_handlers=True
