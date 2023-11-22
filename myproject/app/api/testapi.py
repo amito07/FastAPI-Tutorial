@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query, Path, Body, File, UploadFile, Depends
-from app.models.table1 import test_table
+from fastapi import APIRouter, HTTPException, Query, Path, Body, File, UploadFile, Depends, Header
+from fastapi.security import OAuth2PasswordBearer
+from app.models.table1 import test_table, user_table
 from app.schemas.test_schema import TestModel
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, List
 from app.utils.exception import NormalException
 from pydantic import BaseModel
 
@@ -154,8 +155,38 @@ async def read_items(commons: Annotated[CommonQueryParams, Depends(CommonQueryPa
     response.update({"data":fake_items_db[commons.skip: commons.skip + commons.limit][0]["item_name"]})
     return response
 
+#bulk create 
+class Img_Url(BaseModel):
+    url:str
+    img_type: str
+class UserInfo(BaseModel):
+    name: str
+    age: int
+    phone_number: int
+    img_url: Img_Url
+
+@router.post("/create-bulk-user", summary="User can do bulk assignment")
+async def bulk_create(payload: List[UserInfo]):
+    try:
+        user_instances = [user_table(
+            name=user.name,
+            age=user.age,
+            phone_number=user.phone_number,
+            img_url=user.img_url.model_dump() if user.img_url else None
+        ) for user in payload]
+
+        await user_table.bulk_create(user_instances)
+        return {"message": "User created successfully"}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise HTTPException(status_code=400, message="Something went wrong")
 
 
+#Auth Token Protected Route
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+@router.get("/auth/test")
+async def auth_test(token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token}
 
 
