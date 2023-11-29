@@ -10,7 +10,7 @@ print(config)
 
 log = logging.getLogger("uvicorn")
 
-TORTOISE_MODELS = ["aerich.models","app.models.table1"]
+TORTOISE_MODELS = ["aerich.models","app.models.table1", "app.models.relationaldb"]
 
 TORTOISE_ORM = {
     "connection":{"default": "postgres://citizix_user:S3cret@127.0.0.1/citizix_db?schema=fastapi"},
@@ -27,6 +27,6 @@ def init_db(app: FastAPI) -> None:
         app,
         db_url="postgres://citizix_user:S3cret@127.0.0.1/citizix_db?schema=fastapi",
         modules={"models": TORTOISE_MODELS},
-        generate_schemas=True,
+        generate_schemas=False,
         add_exception_handlers=True
     )
